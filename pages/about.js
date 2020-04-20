@@ -1,14 +1,25 @@
 import Link from 'next/link';
 import Layout from '../components/layout';
+import fetch from 'isomorphic-unfetch';
+import { Component } from 'react';
 
 
-const About = () => (
-  <Layout title="About">
-    <p>A Javascript Programmer</p>
-    <img src="/static/javascript-logo.jpg" alt="JavaScript Logo"/>
-  </Layout>
-)
+export default class About extends Component {
 
+  static async getInitialProps() {
+    const res = await fetch('https://api.github.com/users/seagrendaniel');
+    const data = await res.json();
 
+    return { user: data };
+  }
 
-export default About;
+  render() {
+    const { user } = this.props;
+    return (
+      <Layout title="About">
+        <p>{user.name}</p>
+        <img src={user.avatar_url} alt="Dan Seagren" height="200px" />
+      </Layout>
+    )
+  }
+}
